@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Studio 3D - Catálogo Online</title>
+    <meta name="description" content="Catálogo online da Aura Studio 3D - Decoração, artigos religiosos, luminárias e chaveiros personalizados impressos em 3D.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --brand-primary: #1a1a2e;
+            --brand-secondary: #16213e;
+            --brand-accent: #f59e0b;
+            --brand-accent-light: #fbbf24;
+            --brand-glow: rgba(245, 158, 11, 0.3);
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        .brand-gradient {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+        }
+        .accent-gradient {
+            background: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-accent-light) 100%);
+        }
+        .text-accent {
+            color: var(--brand-accent);
+        }
+        .border-accent {
+            border-color: var(--brand-accent);
+        }
+        .glow-accent {
+            box-shadow: 0 0 30px var(--brand-glow);
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .logo-sub {
+            letter-spacing: 0.3em;
+            font-weight: 300;
+        }
+        .card-3d {
+            transition: var(--transition-smooth);
+            transform: translateY(0);
+        }
+        .card-3d:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-shadow);
+        }
+        .card-3d:active {
+            transform: translateY(-2px);
+        }
+        .tab-btn {
+            transition: var(--transition-smooth);
+            position: relative;
+            white-space: nowrap;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--brand-accent);
+            border-radius: 3px 3px 0 0;
+            transition: var(--transition-smooth);
+            transform: translateX(-50%);
+        }
+        .tab-btn.active::after {
+            width: 60%;
+        }
+        .tab-btn.active {
+            color: var(--brand-accent) !important;
+        }
+        .gallery-img {
+            transition: opacity 0.4s ease;
+        }
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .nav-arrow {
+            transition: var(--transition-smooth);
+            opacity: 0.7;
+        }
+        .nav-arrow:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .dot-indicator {
+            transition: var(--transition-smooth);
+        }
+        .dot-indicator.active {
+            background: var(--brand-accent) !important;
+            transform: scale(1.3);
+        }
+        .whatsapp-btn {
+            transition: var(--transition-smooth);
+        }
+        .whatsapp-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.35);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .slide-up {
+            animation: slideUp 0.4s ease forwards;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        @media (min-width: 641px) and (max-width: 1023px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
+        }
+        .product-price {
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+        .tag-custom {
+            background: var(--brand-accent);
+            color: #1a1a2e;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="brand-gradient text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 50%, rgba(245,158,11,0.4) 0%, transparent 60%), radial-gradient(circle at 70% 20%, rgba(245,158,11,0.15) 0%, transparent 50%);"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
+            <div class="flex flex-col items-center text-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full accent-gradient flex items-center justify-center shadow-lg glow-accent">
+                        <i class="fas fa-cube text-white text-xl sm:text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="logo-text text-2xl sm:text-3xl md:text-4xl text-white">Aura Studio 3D</h1>
+                        <p class="logo-sub text-xs sm:text-sm text-gray-300 mt-0.5">IMPRESSÃO 3D · DESIGN · PERSONALIZAÇÃO</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 text-sm sm:text-base max-w-xl mt-2 font-light">Catálogo online de peças impressas em 3D — qualidade, precisão e criatividade em cada detalhe.</p>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-6 sm:h-8 bg-white" style="border-radius: 100% 100% 0 0 / 100% 100% 0 0;"></div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+        <!-- Categories Tabs -->
+        <section class="mt-6 sm:mt-8 mb-6 sm:mb-8">
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3" id="tab-container" role="tablist" aria-label="Categorias de produtos">
+            </div>
+        </section>
+
+        <!-- Active Category Info -->
+        <div class="text-center mb-6 sm:mb-8 fade-in" id="category-info">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800" id="category-title">Decoração de Casa</h2>
+            <p class="text-gray-500 text-sm sm:text-base mt-1" id="category-desc">Peças exclusivas para transformar seu ambiente.</p>
+        </div>
+
+        <!-- Product Grid -->
+        <section aria-label="Lista de produtos" id="product-section">
+            <div id="product-grid" class="category-grid">
+            </div>
+            <div id="empty-state" class="hidden text-center py-16 text-gray-400">
+                <i class="fas fa-box-open text-5xl mb-4 opacity-50"></i>
+                <p class="text-lg font-medium">Nenhum produto encontrado nesta categoria.</p>
+            </div>
+        </section>
+
+        <!-- Skeleton -->
+        <div id="skeleton-grid" class="category-grid">
+            <div class="loading-shimmer rounded-2xl h-72"></div>
+            <div class="loading-shimmer rounded-2xl h-72"></div>
+            <div class="loading-shimmer rounded-2xl h-72"></div>
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="brand-gradient text-white pt-12 pb-6 relative mt-12">
+        <div class="absolute top-0 left-0 right-0 h-6 sm:h-8 bg-white" style="border-radius: 0 0 100% 100% / 0 0 100% 100%;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8" id="footer-content">
+            </div>
+            <div class="border-t border-gray-700/50 pt-6 text-center text-sm text-gray-400">
+                <p>&copy; 2025 Aura Studio 3D. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== MODAL ===== -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto slide-up" id="modal-body">
+            <div class="sticky top-0 bg-white/90 backdrop-blur-sm z-10 flex justify-end p-2 rounded-t-2xl">
+                <button id="modal-close" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-800">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Gallery -->
+            <div class="px-4 sm:px-6 pb-2">
+                <div class="relative rounded-xl overflow-hidden bg-gray-100" id="gallery-container">
+                    <img id="gallery-img" src="kit2vasos.jpg" alt="Imagem do produto" class="w-full h-64 sm:h-80 md:h-96 object-cover gallery-img">
+                    <button id="gallery-prev" class="nav-arrow absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 shadow flex items-center justify-center hover:bg-white">
+                        <i class="fas fa-chevron-left text-gray-700"></i>
+                    </button>
+                    <button id="gallery-next" class="nav-arrow absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 shadow flex items-center justify-center hover:bg-white">
+                        <i class="fas fa-chevron-right text-gray-700"></i>
+                    </button>
+                </div>
+                <div class="flex justify-center gap-2 mt-3" id="gallery-dots"></div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="px-4 sm:px-6 pb-4 sm:pb-6">
+                <div class="flex items-start justify-between gap-4 mt-2">
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900" id="modal-product-name">Nome do Produto</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="modal-product-category">Categoria</p>
+                    </div>
+                    <span class="text-xl font-bold product-price" id="modal-product-price">R$ 0,00</span>
+                </div>
+                <p class="text-gray-600 mt-3 text-sm sm:text-base leading-relaxed" id="modal-product-desc">Descrição do produto.</p>
+
+                <!-- WhatsApp Order Section -->
+                <div id="whatsapp-order-section" class="mt-6 pt-5 border-t border-gray-200">
+                    <h4 class="font-semibold text-gray-800 text-base sm:text-lg flex items-center gap-2">
+                        <i class="fab fa-whatsapp text-green-500 text-xl"></i>
+                        Fazer Pedido
+                    </h4>
+                    <p class="text-gray-500 text-sm mt-1">Preencha abaixo e enviaremos seu pedido via WhatsApp.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <div>
+                            <label for="order-quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                            <input type="number" id="order-quantity" min="1" value="1" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label for="customer-name" class="block text-sm font-medium text-gray-700 mb-1">Seu nome</label>
+                            <input type="text" id="customer-name" placeholder="Ex: Maria Silva" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-sm">
+                        </div>
+                    </div>
+                    <button id="send-whatsapp-btn" class="whatsapp-btn mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        Enviar Pedido via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        const PHOTO_BASE = 'https://picsum.photos/seed';
+        const PHONE_NUMBER = '5521989516874';
+    const IMAGES_DIR = 'imagens'; // Nome da sua pasta de fotos
+
+    // Função que monta o caminho até a pasta 'imagens/'
+    function getProductImages(filenames) {
+        const defaultPlaceholder = 'https://picsum.photos/seed/placeholder/800/600';
+        if (!filenames || filenames.length === 0) return [defaultPlaceholder];
+        
+        return filenames.map(file => `${IMAGES_DIR}/${file}`);
+    }
+
+    const categories = [
+        { id: 'decoracao', name: 'Decoração de Casa', icon: 'fa-home', desc: 'Peças exclusivas para transformar seu ambiente.' },
+        { id: 'religiosos', name: 'Artigos Religiosos', icon: 'fa-church', desc: 'Fé e devoção em cada detalhe impresso.' },
+        { id: 'luminarias', name: 'Luminárias', icon: 'fa-lightbulb', desc: 'Iluminação design com toque artesanal 3D.' },
+        { id: 'chaveiros', name: 'Chaveiros Personalizados', icon: 'fa-key', desc: 'Seu estilo em miniaturas — personalizamos para você.' }
+    ];
+
+    const products = [
+        { 
+            id: 'dec-01', 
+            category: 'decoracao', 
+            name: 'Vaso Minimalista', 
+            desc: 'Vaso decorativo com design orgânico e superfície texturizada.', 
+            price: 45.00, 
+            images: getProductImages(['vaso1.jpg', 'vaso2.jpg']) 
+        },
+        { 
+            id: 'dec-02', 
+            category: 'decoracao', 
+            name: 'Kit 2 Vasos', 
+            desc: 'Conjunto com 2 vasos decorativos para sala ou escritório.', 
+            price: 75.00, 
+            images: getProductImages(['kit2vasos.jpg', 'kit2vasospreto.jpg']) 
+        },
+        { 
+            id: 'rel-04', 
+            category: 'religiosos', 
+            name: 'Presépio Decorativo', 
+            desc: 'Conjunto compacto de presépio com figuras detalhadas. Perfeito para o Natal.', 
+            price: 60.00, 
+            images: getProductImages(['presepio.jpg', 'presepio2.png']) 
+        },
+        { 
+            id: 'rel-05', 
+            category: 'religiosos', 
+            name: 'Presépio Decorativo Iluminado', 
+            desc: 'Escultura decorativa com leb iluminado em 3D. Perfeito para o Natal.', 
+            price: 60.00, 
+            images: getProductImages(['presepioiluminado.jpg', 'presepioiluminado1.jpeg']) 
+        }
+    ];
+
+        const footerData = {
+            about: {
+                title: 'Aura Studio 3D',
+                text: 'Somos especialistas em impressão 3D com foco em design, qualidade e personalização. Transformamos ideias em objetos reais com precisão e criatividade.',
+                icon: 'fa-cube'
+            },
+            contact: {
+                title: 'Contato',
+                items: [
+                    { label: 'WhatsApp', value: '(21) 98951-6874', icon: 'fa-whatsapp', link: `https://wa.me/${PHONE_NUMBER}` },
+                    { label: 'Email', value: 'contato@aurastudio3d.com', icon: 'fa-envelope', link: 'mailto:contato@aurastudio3d.com' },
+                    { label: 'Instagram', value: '@aurastudio3d', icon: 'fa-instagram', link: '#' }
+                ]
+            },
+            links: {
+                title: 'Links Rápidos',
+                items: [
+                    { label: 'Decoração de Casa', id: 'decoracao' },
+                    { label: 'Artigos Religiosos', id: 'religiosos' },
+                    { label: 'Luminárias', id: 'luminarias' },
+                    { label: 'Chaveiros', id: 'chaveiros' }
+                ]
+            }
+        };
+
+        let currentCategory = 'decoracao';
+        let currentModalProduct = null;
+        let currentImageIndex = 0;
+
+        function renderTabs(items) {
+            return items.map((cat, idx) => `
+                <button role="tab"
+                    class="tab-btn flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-white/70 transition-all ${idx === 0 ? 'active text-amber-600 bg-white/80 shadow-sm' : ''}"
+                    data-category="${cat.id}">
+                    <i class="fas ${cat.icon} text-sm sm:text-base"></i>
+                    <span>${cat.name}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderProducts(items) {
+            if (!items || items.length === 0) return '';
+            return items.map((prod) => {
+                const isCustom = prod.customizable;
+                return `
+                    <article class="card-3d bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="relative overflow-hidden h-48 sm:h-56 bg-gray-100 cursor-pointer" data-id="${prod.id}">
+                                <img src="${prod.images[0]}" alt="${prod.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                                ${isCustom ? '<span class="tag-custom absolute top-3 right-3 shadow-md">Personalizável</span>' : ''}
+                            </div>
+                            <div class="p-4 sm:p-5 cursor-pointer" data-id="${prod.id}">
+                                <div class="flex items-start justify-between gap-2">
+                                    <h3 class="font-semibold text-gray-900 text-sm sm:text-base leading-tight">${prod.name}</h3>
+                                    <span class="product-price text-sm sm:text-base whitespace-nowrap">R$ ${prod.price.toFixed(2)}</span>
+                                </div>
+                                <p class="text-gray-500 text-xs sm:text-sm mt-1.5 line-clamp-2">${prod.desc}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 sm:p-5 sm:pt-0">
+                            <button data-quick-order="${prod.id}" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-3 rounded-lg flex items-center justify-center gap-2 text-xs sm:text-sm shadow transition-all">
+                                <i class="fab fa-whatsapp text-base"></i>
+                                Pedir no WhatsApp
+                            </button>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function renderDots(count, activeIdx) {
+            return Array.from({ length: count }, (_, i) =>
+                `<button class="dot-indicator w-2.5 h-2.5 rounded-full bg-gray-300 ${i === activeIdx ? 'active' : ''} border-0 p-0 cursor-pointer" data-index="${i}"></button>`
+            ).join('');
+        }
+
+        function renderFooter(data) {
+            const { about, contact, links } = data;
+            return `
+                <div class="text-center sm:text-left">
+                    <h3 class="flex items-center justify-center sm:justify-start gap-2 text-lg font-bold text-white">
+                        <i class="fas ${about.icon} text-amber-400"></i> ${about.title}
+                    </h3>
+                    <p class="text-gray-300 text-sm mt-2 leading-relaxed">${about.text}</p>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h3 class="font-semibold text-white text-base mb-3">${contact.title}</h3>
+                    <ul class="space-y-2">
+                        ${contact.items.map(item => `
+                            <li>
+                                <a href="${item.link || '#'}" target="_blank" class="text-gray-300 hover:text-amber-300 transition text-sm flex items-center justify-center sm:justify-start gap-2">
+                                    <i class="fab ${item.icon} text-amber-400 w-4 text-center"></i> ${item.value}
+                                </a>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h3 class="font-semibold text-white text-base mb-3">${links.title}</h3>
+                    <ul class="space-y-2">
+                        ${links.items.map(item => `
+                            <li>
+                                <button class="text-gray-300 hover:text-amber-300 transition text-sm flex items-center gap-2 mx-auto sm:mx-0" data-footer-nav="${item.id}">
+                                    <i class="fas fa-chevron-right text-amber-400 text-xs"></i> ${item.label}
+                                </button>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function sendToWhatsapp(prodName, prodPrice, qty = 1, customerName = '') {
+            let msg = `Olá! Gostaria de fazer um pedido na *Aura Studio 3D*:%0A%0A` +
+                      `🔹 *Produto:* ${prodName}%0A` +
+                      `🔹 *Quantidade:* ${qty}%0A` +
+                      `🔹 *Valor total:* R$ ${(prodPrice * qty).toFixed(2)}%0A`;
+            if (customerName) {
+                msg += `🔹 *Cliente:* ${customerName}%0A`;
+            }
+            msg += `%0AAguardando informações sobre pagamento e entrega!`;
+            
+            window.open(`https://wa.me/${PHONE_NUMBER}?text=${msg}`, '_blank');
+        }
+
+        function mountTabs() {
+            document.getElementById('tab-container').innerHTML = renderTabs(categories);
+        }
+
+        function mountCategoryInfo(catId) {
+            const cat = categories.find(c => c.id === catId);
+            if (!cat) return;
+            document.getElementById('category-title').textContent = cat.name;
+            document.getElementById('category-desc').textContent = cat.desc;
+        }
+
+        function mountProducts(catId) {
+            const grid = document.getElementById('product-grid');
+            const empty = document.getElementById('empty-state');
+            const skeleton = document.getElementById('skeleton-grid');
+
+            const filtered = products.filter(p => p.category === catId);
+
+            if (skeleton) skeleton.style.display = 'none';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                if (empty) empty.classList.remove('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            grid.innerHTML = renderProducts(filtered);
+        }
+
+        function mountFooter() {
+            document.getElementById('footer-content').innerHTML = renderFooter(footerData);
+        }
+
+        function mountModal(product) {
+            if (!product) return;
+            currentModalProduct = product;
+            currentImageIndex = 0;
+
+            const modal = document.getElementById('product-modal');
+            document.getElementById('gallery-img').src = product.images[0];
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-category').textContent = categories.find(c => c.id === product.category)?.name || '';
+            document.getElementById('modal-product-price').textContent = `R$ ${product.price.toFixed(2)}`;
+            document.getElementById('modal-product-desc').textContent = product.desc;
+            document.getElementById('gallery-dots').innerHTML = renderDots(product.images.length, 0);
+
+            document.getElementById('order-quantity').value = 1;
+            document.getElementById('customer-name').value = '';
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateGalleryImage(index) {
+            if (!currentModalProduct) return;
+            const total = currentModalProduct.images.length;
+            if (index < 0) index = total - 1;
+            if (index >= total) index = 0;
+            currentImageIndex = index;
+
+            document.getElementById('gallery-img').src = currentModalProduct.images[index];
+            document.getElementById('gallery-dots').innerHTML = renderDots(total, index);
+        }
+
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+
+            // ---- Quick Order WhatsApp ----
+            const quickBtn = target.closest('[data-quick-order]');
+            if (quickBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const prodId = quickBtn.dataset.quickOrder;
+                const prod = products.find(p => p.id === prodId);
+                if (prod) {
+                    sendToWhatsapp(prod.name, prod.price);
+                }
+                return;
+            }
+
+            // ---- Tab Click ----
+            const tab = target.closest('.tab-btn');
+            if (tab) {
+                e.preventDefault();
+                const catId = tab.dataset.category;
+                if (!catId || catId === currentCategory) return;
+
+                document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active', 'text-amber-600', 'bg-white/80', 'shadow-sm'));
+                tab.classList.add('active', 'text-amber-600', 'bg-white/80', 'shadow-sm');
+
+                currentCategory = catId;
+                mountCategoryInfo(catId);
+                mountProducts(catId);
+                return;
+            }
+
+            // ---- Product Card Click ----
+            const cardClick = target.closest('[data-id]');
+            if (cardClick) {
+                e.preventDefault();
+                const prodId = cardClick.dataset.id;
+                const product = products.find(p => p.id === prodId);
+                if (product) mountModal(product);
+                return;
+            }
+
+            // ---- Modal Close ----
+            if (target.closest('#modal-close') || (target.closest('.modal-overlay') && !target.closest('.modal-content'))) {
+                document.getElementById('product-modal').classList.add('hidden');
+                document.body.style.overflow = '';
+                currentModalProduct = null;
+                return;
+            }
+
+            // ---- Gallery Nav ----
+            if (target.closest('#gallery-prev')) updateGalleryImage(currentImageIndex - 1);
+            if (target.closest('#gallery-next')) updateGalleryImage(currentImageIndex + 1);
+
+            // ---- WhatsApp Send Modal ----
+            if (target.closest('#send-whatsapp-btn')) {
+                e.preventDefault();
+                if (!currentModalProduct) return;
+                const qty = parseInt(document.getElementById('order-quantity').value, 10) || 1;
+                const name = document.getElementById('customer-name').value.trim();
+                sendToWhatsapp(currentModalProduct.name, currentModalProduct.price, qty, name);
+                return;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            mountTabs();
+            mountCategoryInfo('decoracao');
+            mountProducts('decoracao');
+            mountFooter();
+        });
+    </script>
+</body>
+</html>
